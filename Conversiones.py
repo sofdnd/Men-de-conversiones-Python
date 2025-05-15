@@ -1,68 +1,97 @@
+
 import tkinter as tk
 from tkinter import ttk, messagebox
 
 # Funciones de conversión
-def convertir_longitud(valor):
+def convertir_longitud(valor, tipo):
     try:
         val = float(valor)
-        km = val / 1000
-        m = val * 0.0254
-        return f"{val} metros = {km:.3f} km\n{val} pulgadas = {m:.3f} metros"
+        if tipo == "Metros a Kilómetros":
+            km = val / 1000
+            return f"{val} metros = {km:.3f} km"
+        elif tipo == "Pulgadas a Metros":
+            m = val * 0.0254
+            return f"{val} pulgadas = {m:.3f} metros"
     except ValueError:
         return "Valor no válido"
 
-def convertir_masa(valor):
+def convertir_masa(valor, tipo):
     try:
         val = float(valor)
-        g = val * 1000
-        kg = val * 0.4536
-        return f"{val} kg = {g:.1f} gramos\n{val} libras = {kg:.3f} kg"
+        if tipo == "Kilogramos a Gramos":
+            g = val * 1000
+            return f"{val} kg = {g:.1f} gramos"
+        elif tipo == "Libras a Kilogramos":
+            kg = val * 0.4536
+            return f"{val} libras = {kg:.3f} kg"
     except ValueError:
         return "Valor no válido"
 
-def convertir_tiempo(valor):
+def convertir_tiempo(valor, tipo):
     try:
         val = float(valor)
-        min = val / 60
-        dias = val / 24
-        return f"{val} segundos = {min:.2f} minutos\n{val} horas = {dias:.2f} días"
+        if tipo == "Segundos a Minutos":
+            min = val / 60
+            return f"{val} segundos = {min:.2f} minutos"
+        elif tipo == "Horas a Días":
+            dias = val / 24
+            return f"{val} horas = {dias:.2f} días"
     except ValueError:
         return "Valor no válido"
-    
+
+# Ventana de conversión específica
 def abrir_ventana(tipo):
     ventana = tk.Toplevel()
     ventana.title(f"Conversión de {tipo}")
+    ventana.configure(bg="#e0f7fa")
 
-    tk.Label(ventana, text="Ingrese valor:").pack(pady=5)
+    tk.Label(ventana, text=f"Conversión de {tipo}", bg="#e0f7fa", font=("Courier", 14)).pack(pady=10)
+
+    opciones = []
+    if tipo == "Masa":
+        opciones = ["Kilogramos a Gramos", "Libras a Kilogramos"]
+    elif tipo == "Longitud":
+        opciones = ["Metros a Kilómetros", "Pulgadas a Metros"]
+    elif tipo == "Tiempo":
+        opciones = ["Segundos a Minutos", "Horas a Días"]
+
+    tk.Label(ventana, text="Selecciona tipo de conversión:", bg="#e0f7fa").pack()
+    combo = ttk.Combobox(ventana, values=opciones)
+    combo.set("Selecciona una opción")
+    combo.pack(pady=5)
+
+    tk.Label(ventana, text="Valor a convertir:", bg="#e0f7fa").pack(pady=5)
     entrada = tk.Entry(ventana)
     entrada.pack(pady=5)
 
-    resultado_label = tk.Label(ventana, text="Resultado:")
+    resultado_label = tk.Label(ventana, text="Resultado:", bg="#e0f7fa")
     resultado_label.pack(pady=5)
 
     def hacer_conversion():
         valor = entrada.get()
+        seleccion = combo.get()
         if tipo == "Longitud":
-            resultado = convertir_longitud(valor)
+            resultado = convertir_longitud(valor, seleccion)
         elif tipo == "Masa":
-            resultado = convertir_masa(valor)
+            resultado = convertir_masa(valor, seleccion)
         elif tipo == "Tiempo":
-            resultado = convertir_tiempo(valor)
+            resultado = convertir_tiempo(valor, seleccion)
         resultado_label.config(text=f"Resultado:\n{resultado}")
 
-    tk.Button(ventana, text="Convertir", command=hacer_conversion).pack(pady=5)
+    tk.Button(ventana, text="Convertir", command=hacer_conversion, bg="#00796b", fg="white").pack(pady=10)
 
 # Menú principal
 def menu_principal():
     raiz = tk.Tk()
-    raiz.title("Conversor de Unidades")
-    raiz.geometry("300x250")
+    raiz.title("Menú de Conversiones")
+    raiz.geometry("350x300")
+    raiz.configure(bg="#e0f7fa")
 
-    tk.Label(raiz, text="Escoja su opción", bg="lightgreen", font=("Arial", 12)).pack(fill="x")
+    tk.Label(raiz, text="Selecciona una opción:", bg="#e0f7fa", font=("Courier", 14)).pack(pady=15)
 
-    tk.Button(raiz, text="Longitud", bg="orange", command=lambda: abrir_ventana("Longitud")).pack(pady=10)
-    tk.Button(raiz, text="Masa", bg="orange", command=lambda: abrir_ventana("Masa")).pack(pady=10)
-    tk.Button(raiz, text="Tiempo", bg="orange", command=lambda: abrir_ventana("Tiempo")).pack(pady=10)
+    tk.Button(raiz, text="Conversión de Longitud", bg="#80cbc4", fg="black", command=lambda: abrir_ventana("Longitud")).pack(pady=10)
+    tk.Button(raiz, text="Conversión de Masa", bg="#80cbc4", fg="black", command=lambda: abrir_ventana("Masa")).pack(pady=10)
+    tk.Button(raiz, text="Conversión de Tiempo", bg="#80cbc4", fg="black", command=lambda: abrir_ventana("Tiempo")).pack(pady=10)
 
     raiz.mainloop()
 
